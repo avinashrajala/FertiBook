@@ -1,0 +1,6 @@
+<nav class="subnav" aria-label="Admin sections">
+  <a href="{{ url_for('admin_dashboard') }}" class="{{ 'active' if request.endpoint == 'admin_dashboard' }}">Overview</a>
+  <a href="{{ url_for('admin_bookings') }}" class="{{ 'active' if request.endpoint == 'admin_bookings' }}">Bookings</a>
+  <a href="{{ url_for('admin_fertilizers') }}" class="{{ 'active' if request.endpoint in ['admin_fertilizers', 'admin_add_fertilizer', 'admin_edit_fertilizer'] }}">Fertilizers</a>
+  <a href="{{ url_for('admin_farmers') }}" class="{{ 'active' if request.endpoint == 'admin_farmers' }}">Farmers</a>
+</nav>

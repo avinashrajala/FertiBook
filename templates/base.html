@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Home{% endblock %} | FertiBook</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700;800&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <header class="navbar">
+    <div class="container nav-inner">
+      <a class="brand" href="{{ url_for('index') }}"><i class="fa-solid fa-seedling"></i> FertiBook</a>
+      <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      <nav class="nav-links" id="navLinks">
+        {% if session.role == 'admin' %}
+          <a href="{{ url_for('admin_dashboard') }}"><i class="fa-solid fa-gauge"></i> Admin panel</a>
+          <a href="{{ url_for('fertilizers') }}">Fertilizers</a>
+        {% else %}
+          <a href="{{ url_for('index') }}">Home</a>
+          <a href="{{ url_for('fertilizers') }}">Fertilizers</a>
+          <a href="{{ url_for('my_bookings') }}">My bookings</a>
+        {% endif %}
+        {% if session.user_id %}
+          {% if session.role == 'farmer' %}<a href="{{ url_for('dashboard') }}">Dashboard</a>{% endif %}
+          <form method="post" action="{{ url_for('logout') }}" class="inline-form">
+            {{ csrf_field() }}
+            <button type="submit" class="nav-btn"><i class="fa-solid fa-right-from-bracket"></i> Logout ({{ session.name.split()[0] }})</button>
+          </form>
+        {% else %}
+          <a href="{{ url_for('login') }}">Login</a>
+          <a class="nav-cta" href="{{ url_for('register') }}">Register</a>
+        {% endif %}
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="container flash-area">
+          {% for category, message in messages %}
+            <div class="flash flash-{{ category }}" role="alert">
+              <span>{{ message }}</span>
+              <button type="button" class="flash-close" aria-label="Dismiss">&times;</button>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <strong><i class="fa-solid fa-seedling"></i> FertiBook</strong>
+      <span>College mini project. Online fertilizer booking for farmers.</span>
+      <a href="{{ url_for('admin_login') }}">Admin login</a>
+    </div>
+  </footer>
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

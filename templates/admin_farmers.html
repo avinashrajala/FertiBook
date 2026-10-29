@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Registered farmers{% endblock %}
+{% block content %}
+<section class="container section">
+  <h1>Registered farmers</h1>
+  {% include "_admin_nav.html" %}
+  {% if farmers %}
+  <div class="table-wrap">
+    <table class="table">
+      <thead><tr><th>#</th><th>Name</th><th>Email</th><th>Phone</th><th>Bookings</th><th>Joined</th></tr></thead>
+      <tbody>
+        {% for u in farmers %}
+        <tr>
+          <td data-label="#">{{ u.id }}</td><td data-label="Name">{{ u.name }}</td>
+          <td data-label="Email">{{ u.email }}</td><td data-label="Phone">{{ u.phone }}</td>
+          <td data-label="Bookings">{{ u.booking_count }}</td><td data-label="Joined">{{ u.created_at[:10] }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}<p class="empty">No farmers have registered yet.</p>{% endif %}
+</section>
+{% endblock %}

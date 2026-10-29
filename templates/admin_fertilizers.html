@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Manage fertilizers{% endblock %}
+{% block content %}
+<section class="container section">
+  <div class="section-head">
+    <h1>Manage fertilizers</h1>
+    <a class="btn btn-primary" href="{{ url_for('admin_add_fertilizer') }}"><i class="fa-solid fa-plus"></i> Add fertilizer</a>
+  </div>
+  {% include "_admin_nav.html" %}
+  {% if items %}
+  <div class="table-wrap">
+    <table class="table">
+      <thead><tr><th>Name</th><th>Type</th><th>Price / bag</th><th>Stock</th><th>Update stock</th><th>Actions</th></tr></thead>
+      <tbody>
+        {% for f in items %}
+        <tr>
+          <td data-label="Name"><strong>{{ f.name }}</strong></td>
+          <td data-label="Type">{{ f.type }}</td>
+          <td data-label="Price">{{ f.price|money }}</td>
+          <td data-label="Stock"><span class="{{ 'stock out' if f.stock == 0 else ('stock low' if f.stock < low_limit else 'stock') }}">{{ f.stock }}</span></td>
+          <td data-label="Update stock">
+            <form method="post" action="{{ url_for('admin_update_stock', fid=f.id) }}" class="status-form">
+              {{ csrf_field() }}
+              <input type="number" name="stock" min="0" value="{{ f.stock }}" aria-label="Stock for {{ f.name }}" class="narrow-input" required>
+              <button class="btn btn-small btn-primary" type="submit">Save</button>
+            </form>
+          </td>
+          <td data-label="Actions" class="actions">
+            <a class="btn btn-small btn-ghost" href="{{ url_for('admin_edit_fertilizer', fid=f.id) }}">Edit</a>
+            <form method="post" action="{{ url_for('admin_delete_fertilizer', fid=f.id) }}" data-confirm="Delete {{ f.name }}? This cannot be undone.">
+              {{ csrf_field() }}
+              <button class="btn btn-small btn-danger" type="submit">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}<p class="empty">No fertilizers yet. Add the first one.</p>{% endif %}
+</section>
+{% endblock %}

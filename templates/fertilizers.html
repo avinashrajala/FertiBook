@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Fertilizers{% endblock %}
+{% block content %}
+<section class="container section">
+  <h1>Fertilizers</h1>
+  <form method="get" class="filter-bar">
+    <input type="search" name="q" value="{{ q }}" placeholder="Search by name" aria-label="Search fertilizers">
+    <select name="type" aria-label="Filter by type">
+      <option value="">All types</option>
+      {% for t in types %}<option value="{{ t }}" {{ 'selected' if t == ftype }}>{{ t }}</option>{% endfor %}
+    </select>
+    <button class="btn btn-primary" type="submit"><i class="fa-solid fa-magnifying-glass"></i> Search</button>
+    {% if q or ftype %}<a class="btn btn-ghost" href="{{ url_for('fertilizers') }}">Clear</a>{% endif %}
+  </form>
+
+  {% if items %}
+  <div class="grid grid-3">
+    {% for f in items %}
+    <article class="fert-card">
+      <div class="fert-top">
+        <h3>{{ f.name }}</h3>
+        <span class="badge badge-type">{{ f.type }}</span>
+      </div>
+      <p class="fert-desc">{{ f.description }}</p>
+      <div class="fert-meta">
+        <div><span class="meta-label">Price per bag</span><strong class="price">{{ f.price|money }}</strong></div>
+        <div>
+          <span class="meta-label">In stock</span>
+          {% if f.stock == 0 %}<strong class="stock out">Out of stock</strong>
+          {% elif f.stock < low_limit %}<strong class="stock low">{{ f.stock }} bags (low)</strong>
+          {% else %}<strong class="stock">{{ f.stock }} bags</strong>{% endif %}
+        </div>
+      </div>
+      {% if f.stock == 0 %}
+        <button class="btn btn-block" disabled>Out of stock</button>
+      {% elif session.role == 'admin' %}
+        <a class="btn btn-ghost btn-block" href="{{ url_for('admin_edit_fertilizer', fid=f.id) }}">Edit in admin panel</a>
+      {% else %}
+        <a class="btn btn-primary btn-block" href="{{ url_for('book', fertilizer_id=f.id) }}"><i class="fa-solid fa-cart-plus"></i> Book now</a>
+      {% endif %}
+    </article>
+    {% endfor %}
+  </div>
+  {% else %}
+    <p class="empty">No fertilizers match your search.</p>
+  {% endif %}
+</section>
+{% endblock %}

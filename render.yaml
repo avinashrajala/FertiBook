@@ -1,0 +1,17 @@
+# Optional "Blueprint" file. You can also set everything by hand in the Render dashboard (see README).
+services:
+  - type: web
+    name: fertibook
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.3
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ADMIN_EMAIL
+        value: admin@fertibook.com
+      - key: ADMIN_PASSWORD
+        sync: false

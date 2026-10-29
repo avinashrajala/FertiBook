@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}All bookings{% endblock %}
+{% block content %}
+<section class="container section">
+  <h1>All bookings</h1>
+  {% include "_admin_nav.html" %}
+  <div class="chips">
+    <a class="chip {{ 'active' if not current }}" href="{{ url_for('admin_bookings') }}">All</a>
+    {% for s in STATUSES %}
+      <a class="chip {{ 'active' if current == s }}" href="{{ url_for('admin_bookings', status=s) }}">{{ s }}</a>
+    {% endfor %}
+  </div>
+  <p class="hint">Choose a new status and press Save. Choosing Cancelled returns the bags to stock. Completed and Cancelled bookings are final.</p>
+  {% if bookings %}
+    {% set admin = true %}{% set show_cancel = false %}{% set new_id = none %}
+    {% include "_bookings_table.html" %}
+  {% else %}<p class="empty">No bookings found.</p>{% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,49 @@
+{# Shared table. Variables: bookings, show_cancel (farmer), admin (bool), new_id #}
+<div class="table-wrap">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Booking ID</th>
+        {% if admin %}<th>Farmer</th>{% endif %}
+        <th>Fertilizer</th><th>Bags</th><th>Total</th><th>Delivery address</th><th>Date</th><th>Status</th>
+        {% if show_cancel or admin %}<th>{{ 'Update' if admin else 'Action' }}</th>{% endif %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for b in bookings %}
+      <tr class="{{ 'row-new' if new_id == b.id }}">
+        <td data-label="Booking ID"><strong>{{ b.id|booking_code }}</strong></td>
+        {% if admin %}<td data-label="Farmer">{{ b.farmer_name }}<br><small>{{ b.farmer_phone }}</small></td>{% endif %}
+        <td data-label="Fertilizer">{{ b.fertilizer_name }}</td>
+        <td data-label="Bags">{{ b.quantity }}</td>
+        <td data-label="Total">{{ b.total_price|money }}</td>
+        <td data-label="Address" class="addr">{{ b.delivery_address }}</td>
+        <td data-label="Date">{{ b.created_at[:10] }}</td>
+        <td data-label="Status"><span class="status status-{{ b.status|lower }}">{{ b.status }}</span></td>
+        {% if admin %}
+        <td data-label="Update">
+          {% if b.status in ['Pending', 'Confirmed'] %}
+          <form method="post" action="{{ url_for('admin_update_status', booking_id=b.id) }}" class="status-form">
+            {{ csrf_field() }}
+            <select name="status" aria-label="New status">
+              {% for s in STATUSES %}<option value="{{ s }}" {{ 'selected' if s == b.status }}>{{ s }}</option>{% endfor %}
+            </select>
+            <button class="btn btn-small btn-primary" type="submit">Save</button>
+          </form>
+          {% else %}<small>Final</small>{% endif %}
+        </td>
+        {% elif show_cancel %}
+        <td data-label="Action">
+          {% if b.status == 'Pending' %}
+          <form method="post" action="{{ url_for('cancel_my_booking', booking_id=b.id) }}" data-confirm="Cancel booking {{ b.id|booking_code }}?">
+            {{ csrf_field() }}
+            <button class="btn btn-small btn-danger" type="submit">Cancel</button>
+          </form>
+          {% else %}<small>-</small>{% endif %}
+        </td>
+        {% endif %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

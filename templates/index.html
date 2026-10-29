@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Book fertilizer online{% endblock %}
+{% block content %}
+{% set icons = {'Nitrogen': 'fa-leaf', 'Phosphatic': 'fa-seedling', 'Complex': 'fa-flask', 'Potassic': 'fa-droplet', 'Organic': 'fa-recycle'} %}
+
+<section class="hero">
+  <div class="container hero-grid">
+    <div>
+      <h1>Book your fertilizer from home, before the season starts.</h1>
+      <p class="hero-text">Check today's price and stock, reserve the bags you need, and follow your order from Pending to Completed. No queue at the shop.</p>
+      <div class="hero-actions">
+        <a class="btn btn-gold" href="{{ url_for('fertilizers') }}"><i class="fa-solid fa-basket-shopping"></i> See fertilizers</a>
+        {% if not session.user_id %}
+          <a class="btn btn-outline-light" href="{{ url_for('register') }}">Create farmer account</a>
+        {% endif %}
+      </div>
+    </div>
+    <ol class="steps-card" aria-label="How booking works">
+      <li><strong>Register</strong><span>Free account with your phone number.</span></li>
+      <li><strong>Choose and book</strong><span>Pick a fertilizer, enter bags and delivery address.</span></li>
+      <li><strong>Track your order</strong><span>Your booking ID shows its status at every step.</span></li>
+    </ol>
+  </div>
+</section>
+
+<section class="container section">
+  <h2>Why FertiBook?</h2>
+  <p class="lead">Farmers often travel to the shop only to find the fertilizer is out of stock or the price has changed. FertiBook puts the shop's catalog online, so you can see what is available, book it, and keep a record of every order.</p>
+</section>
+
+<section class="container section">
+  <h2>Fertilizer categories</h2>
+  {% if categories %}
+  <div class="grid grid-4">
+    {% for c in categories %}
+      <a class="cat-card" href="{{ url_for('fertilizers', type=c.type) }}">
+        <i class="fa-solid {{ icons.get(c.type, 'fa-seedling') }}"></i>
+        <h3>{{ c.type }}</h3>
+        <p>{{ c.products }} product{{ 's' if c.products != 1 }} &middot; from {{ c.from_price|money }}</p>
+      </a>
+    {% endfor %}
+  </div>
+  {% else %}
+    <p class="empty">No fertilizers have been added yet.</p>
+  {% endif %}
+</section>
+
+<section class="cta-band">
+  <div class="container cta-inner">
+    <h2>Ready for the next sowing?</h2>
+    <a class="btn btn-gold" href="{{ url_for('fertilizers') }}">Book now</a>
+  </div>
+</section>
+{% endblock %}

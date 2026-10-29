@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Book {{ fert.name }}{% endblock %}
+{% block content %}
+<section class="container section narrow">
+  <a class="back-link" href="{{ url_for('fertilizers') }}"><i class="fa-solid fa-arrow-left"></i> Back to fertilizers</a>
+  <h1>Book {{ fert.name }}</h1>
+  <div class="panel">
+    <div class="book-summary">
+      <span class="badge badge-type">{{ fert.type }}</span>
+      <p>{{ fert.description }}</p>
+      <p><strong>{{ fert.price|money }}</strong> per bag &middot; <strong>{{ fert.stock }}</strong> bags available</p>
+    </div>
+
+    {% if fert.stock == 0 %}
+      <p class="empty">This fertilizer is out of stock right now.</p>
+    {% else %}
+    <form method="post" id="bookForm" novalidate>
+      {{ csrf_field() }}
+      <label for="quantity">Number of bags</label>
+      <input type="number" id="quantity" name="quantity" min="1" max="{{ fert.stock }}" value="{{ form.get('quantity', 1) }}" data-price="{{ fert.price }}" required>
+
+      <label for="address">Delivery address</label>
+      <textarea id="address" name="address" rows="3" minlength="10" maxlength="300" placeholder="Village, mandal, district, PIN code" required>{{ form.get('address', '') }}</textarea>
+
+      <div class="total-box">
+        <span>Total price</span>
+        <strong id="totalPrice">{{ fert.price|money }}</strong>
+      </div>
+      <button class="btn btn-primary btn-block" type="submit">Confirm booking</button>
+    </form>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

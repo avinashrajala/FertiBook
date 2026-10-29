@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Admin overview{% endblock %}
+{% block content %}
+<section class="container section">
+  <h1>Admin overview</h1>
+  {% include "_admin_nav.html" %}
+
+  <div class="grid grid-4 stats">
+    <div class="stat"><i class="fa-solid fa-clipboard-list"></i><strong>{{ counts.Total }}</strong><span>Total bookings</span></div>
+    <div class="stat stat-pending"><i class="fa-solid fa-hourglass-half"></i><strong>{{ counts.Pending }}</strong><span>Pending</span></div>
+    <div class="stat stat-confirmed"><i class="fa-solid fa-circle-check"></i><strong>{{ counts.Confirmed }}</strong><span>Confirmed</span></div>
+    <div class="stat stat-completed"><i class="fa-solid fa-truck"></i><strong>{{ counts.Completed }}</strong><span>Completed</span></div>
+    <div class="stat stat-cancelled"><i class="fa-solid fa-ban"></i><strong>{{ counts.Cancelled }}</strong><span>Cancelled</span></div>
+    <div class="stat"><i class="fa-solid fa-users"></i><strong>{{ stats.farmers }}</strong><span>Registered farmers</span></div>
+    <div class="stat"><i class="fa-solid fa-boxes-stacked"></i><strong>{{ stats.products }}</strong><span>Fertilizers listed</span></div>
+    <div class="stat"><i class="fa-solid fa-indian-rupee-sign"></i><strong>{{ stats.revenue|money }}</strong><span>Confirmed + completed sales</span></div>
+  </div>
+
+  {% if low_stock %}
+  <div class="panel warn-panel">
+    <h2>Low stock</h2>
+    <ul>
+      {% for f in low_stock %}
+        <li><strong>{{ f.name }}</strong>: {{ f.stock }} bags left
+          <a href="{{ url_for('admin_fertilizers') }}">Update stock</a></li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  <div class="section-head">
+    <h2>Latest bookings</h2>
+    <a class="btn btn-ghost" href="{{ url_for('admin_bookings') }}">All bookings</a>
+  </div>
+  {% if bookings %}
+    {% set admin = true %}{% set show_cancel = false %}{% set new_id = none %}
+    {% include "_bookings_table.html" %}
+  {% else %}<p class="empty">No bookings yet.</p>{% endif %}
+</section>
+{% endblock %}

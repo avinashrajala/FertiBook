@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}My bookings{% endblock %}
+{% block content %}
+<section class="container section">
+  <h1>My bookings</h1>
+  <p class="lead">You can cancel a booking while it is still Pending.</p>
+  {% if bookings %}
+    {% set show_cancel = true %}{% set admin = false %}
+    {% include "_bookings_table.html" %}
+  {% else %}
+    <p class="empty">No bookings yet. <a href="{{ url_for('fertilizers') }}">Browse fertilizers</a>.</p>
+  {% endif %}
+</section>
+{% endblock %}

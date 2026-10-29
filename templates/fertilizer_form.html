@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit' if editing else 'Add' }} fertilizer{% endblock %}
+{% block content %}
+<section class="container section narrow">
+  <a class="back-link" href="{{ url_for('admin_fertilizers') }}"><i class="fa-solid fa-arrow-left"></i> Back to fertilizers</a>
+  <h1>{{ 'Edit fertilizer' if editing else 'Add fertilizer' }}</h1>
+  <div class="panel">
+    <form method="post" novalidate>
+      {{ csrf_field() }}
+      <label for="name">Name</label>
+      <input type="text" id="name" name="name" value="{{ item.get('name', '') }}" minlength="2" maxlength="60" required>
+
+      <label for="type">Type</label>
+      <input type="text" id="type" name="type" list="typeList" value="{{ item.get('type', '') }}" maxlength="40" required>
+      <datalist id="typeList">
+        <option value="Nitrogen"><option value="Phosphatic"><option value="Potassic"><option value="Complex"><option value="Organic">
+      </datalist>
+
+      <label for="price">Price per bag (&#8377;)</label>
+      <input type="number" id="price" name="price" min="1" step="0.01" value="{{ item.get('price', '') }}" required>
+
+      <label for="stock">Stock (bags)</label>
+      <input type="number" id="stock" name="stock" min="0" step="1" value="{{ item.get('stock', '') }}" required>
+
+      <label for="description">Description</label>
+      <textarea id="description" name="description" rows="4" minlength="10" maxlength="500" required>{{ item.get('description', '') }}</textarea>
+
+      <button class="btn btn-primary btn-block" type="submit">{{ 'Save changes' if editing else 'Add fertilizer' }}</button>
+    </form>
+  </div>
+</section>
+{% endblock %}
